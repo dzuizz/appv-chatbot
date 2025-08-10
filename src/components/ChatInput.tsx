@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
-import { Paperclip, Send, X, Upload } from 'lucide-react'
+import { useState, useRef, useEffect, useCallback } from 'react'
+import { Paperclip, Send, Upload } from 'lucide-react'
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void
@@ -14,6 +14,13 @@ export default function ChatInput({ onSendMessage, isLoading }: ChatInputProps) 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  const submit = useCallback(() => {
+    if (!inputValue.trim() || isLoading) return
+    onSendMessage(inputValue.trim())
+    setInputValue('')
+    if (textareaRef.current) textareaRef.current.style.height = '48px'
+  }, [inputValue, isLoading, onSendMessage])
+
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'enter') {
@@ -23,14 +30,7 @@ export default function ChatInput({ onSendMessage, isLoading }: ChatInputProps) 
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [])
-
-  const submit = () => {
-    if (!inputValue.trim() || isLoading) return
-    onSendMessage(inputValue.trim())
-    setInputValue('')
-    if (textareaRef.current) textareaRef.current.style.height = '48px'
-  }
+  }, [submit])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {

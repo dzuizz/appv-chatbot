@@ -105,7 +105,8 @@ export default function MarkdownRenderer({ content, className = '' }: MarkdownRe
     em: ({ children }) => <em className="italic">{children}</em>,
     
     // Code
-    code: ({ inline, className, children, ...props }) => {
+    code: ({ className, children, ...props }) => {
+      const inline = (props as { inline?: boolean }).inline;
       if (inline) {
         return (
           <code 
@@ -121,7 +122,7 @@ export default function MarkdownRenderer({ content, className = '' }: MarkdownRe
       const language = match ? match[1] : ''
       
       return (
-        <CodeBlock language={language} children={String(children).replace(/\n$/, '')} />
+        <CodeBlock language={language}>{String(children).replace(/\n$/, '')}</CodeBlock>
       )
     },
     
@@ -129,10 +130,10 @@ export default function MarkdownRenderer({ content, className = '' }: MarkdownRe
     pre: ({ children }) => {
       // Extract the code content from the pre element
       const codeContent = typeof children === 'string' ? children : 
-        React.isValidElement(children) && children.props.children ? 
-        String(children.props.children) : String(children)
+        React.isValidElement(children) && (children.props as { children?: unknown }).children ? 
+        String((children.props as { children?: unknown }).children) : String(children)
       
-      return <CodeBlock children={codeContent} />
+      return <CodeBlock>{codeContent}</CodeBlock>
     },
     
     // Blockquotes
@@ -173,6 +174,7 @@ export default function MarkdownRenderer({ content, className = '' }: MarkdownRe
     
     // Images (basic styling)
     img: ({ src, alt }) => (
+      /* eslint-disable-next-line @next/next/no-img-element */
       <img 
         src={src} 
         alt={alt} 

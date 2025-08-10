@@ -17,7 +17,7 @@ export default function Settings({ onClose }: SettingsProps) {
     exportFormat: 'markdown'
   })
 
-  const handleSettingChange = (key: string, value: any) => {
+  const handleSettingChange = (key: string, value: string | boolean) => {
     setSettings(prev => ({ ...prev, [key]: value }))
   }
 

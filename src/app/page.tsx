@@ -107,7 +107,7 @@ export default function ChatbotUI() {
       console.log('Chat API response context:', data.context)
 
       // Add debug info and sources if available
-      let debugInfo = []
+      const debugInfo = []
       if (data.context.hasDocuments) debugInfo.push('📚 Knowledge base available')
       if (data.context.hasConversationHistory) debugInfo.push('💬 Conversation context used')
       if (data.context.chunksUsed > 0) debugInfo.push(`🔍 ${data.context.chunksUsed} relevant chunks found`)
@@ -115,7 +115,7 @@ export default function ChatbotUI() {
       if (data.context && data.context.sources && data.context.sources.length > 0) {
         const sourcesMessage: Message = {
           id: `${Date.now()}-sources`,
-          content: `**Context Info:**\n${debugInfo.join('\n')}\n\n**Sources used:**\n${data.context.sources.map((source: any, index: number) => 
+          content: `**Context Info:**\n${debugInfo.join('\n')}\n\n**Sources used:**\n${data.context.sources.map((source: { filename: string; chunkIndex: number }, index: number) => 
             `${index + 1}. ${source.filename} (section ${source.chunkIndex + 1})`
           ).join('\n')}`,
           role: 'assistant',

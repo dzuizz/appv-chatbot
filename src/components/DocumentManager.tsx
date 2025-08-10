@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { X, FileText, Trash2, RefreshCw } from 'lucide-react'
+import { X, FileText, RefreshCw } from 'lucide-react'
 
 interface DocumentManagerProps {
   onClose: () => void

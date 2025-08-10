@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     }
 
     let documentContext = ''
-    let relevantChunks: any[] = []
+    let relevantChunks: Array<{ content: string; metadata: { filename: string; chunkIndex: number } }> = []
 
     // First, check if we have any documents in the knowledge base
     const stats = vectorStore.getStats()
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
       // Include last 10 messages for context
       const recentHistory = chatHistory.slice(-10)
       conversationContext = recentHistory
-        .map((msg: any) => `${msg.role === 'user' ? 'Human' : 'Assistant'}: ${msg.content}`)
+        .map((msg: { role: string; content: string }) => `${msg.role === 'user' ? 'Human' : 'Assistant'}: ${msg.content}`)
         .join('\n')
       console.log(`Conversation context includes ${recentHistory.length} previous messages`)
     }
@@ -100,7 +100,7 @@ export async function PUT(request: NextRequest) {
     }
 
     let context = ''
-    let relevantChunks: any[] = []
+    let relevantChunks: Array<{ content: string; metadata: { filename: string; chunkIndex: number } }> = []
 
     if (useRag && vectorStore.getStats().totalChunks > 0) {
       relevantChunks = await vectorStore.searchSimilar(message, 5)
